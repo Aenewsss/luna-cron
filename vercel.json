@@ -1,11 +1,6 @@
 {
   "version": 2,
   "builds": [
-    { "src": "api/schedule.js", "use": "@vercel/node" },
-    { "src": "api/hello.js", "use": "@vercel/node" }
-  ],
-  "routes": [
-    { "src": "/api/schedule", "dest": "/api/schedule.js" },
-    { "src": "/api/hello", "dest": "/api/hello.js" }
+    { "src": "api/*.js", "use": "@vercel/node" }
   ]
 }
