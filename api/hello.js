@@ -8,6 +8,7 @@ if (!admin.apps.length) {
         databaseURL: "https://luna-4e044-default-rtdb.firebaseio.com"
     });
 
+    
     console.log('Firebase Admin initialized successfully');
   } catch (error) {
     console.error('Error initializing Firebase Admin:', error);
