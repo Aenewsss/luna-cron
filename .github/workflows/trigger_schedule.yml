@@ -1,0 +1,13 @@
+# .github/workflows/trigger_schedule.yml
+name: Trigger Vercel Schedule
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Vercel API
+        run: curl -X GET https://luna-cron.vercel.app/api/schedule

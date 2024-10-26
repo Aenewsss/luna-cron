@@ -1,0 +1,22 @@
+{
+  "name": "luna-cron",
+  "version": "1.0.0",
+  "description": "cron to send mails and whatsapp reminders message to user ",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node --env-file=.env index.js"
+  },
+  "keywords": [
+    "luna",
+    "cron"
+  ],
+  "author": "Aenã Martinelli",
+  "license": "ISC",
+  "dependencies": {
+    "firebase-admin": "^12.7.0",
+    "mysql2": "^3.11.3",
+    "node-cron": "^3.0.3",
+    "nodemailer": "^6.9.15"
+  }
+}
