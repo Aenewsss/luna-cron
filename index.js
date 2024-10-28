@@ -1,8 +1,8 @@
 import cron from 'node-cron';
 import { sendEmail } from './mailer.js'; // Email function
 import { sendWpp } from './whatsapp.js';
-import { getData, database } from './firebase.js'; // Import Firebase database reference
-import { ref, onValue } from 'firebase-admin/database'; // Firebase listener functions
+import { getData, database } from './firebase.js'; // Firebase admin setup
+import admin from 'firebase-admin'; // Correct import for Firebase Admin SDK
 
 let scheduledJobs = [];
 
@@ -65,10 +65,10 @@ async function scheduleTasks() {
 
 // Listener to watch for changes in the 'tasks' collection
 function watchDatabaseChanges() {
-    const tasksRef = ref(database, 'tasks');
+    const tasksRef = admin.database().ref('tasks'); // Correct usage of Firebase Admin SDK
 
     // Re-run scheduling whenever data changes
-    onValue(tasksRef, async () => {
+    tasksRef.on('value', async () => {
         console.log('Detected changes in tasks. Re-scheduling...');
         await scheduleTasks();
     });
