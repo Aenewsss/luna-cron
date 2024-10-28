@@ -1,8 +1,8 @@
 // cronJobs.js
 import cron from 'node-cron';
-import { sendEmail } from '../mailer.js'; // Email function
-import { sendWpp } from '../whatsapp.js';
-import { getData } from "../firebase.js"
+import { sendEmail } from './mailer.js'; // Email function
+import { sendWpp } from './whatsapp.js';
+import { getData } from "./firebase.js"
 
 // Function to fetch tasks from the database
 async function fetchTasks() {
