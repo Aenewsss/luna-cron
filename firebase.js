@@ -6,11 +6,11 @@ admin.initializeApp({
     databaseURL: "https://luna-4e044-default-rtdb.firebaseio.com"
 });
 
-const db = admin.database();
+export const database = admin.database();
 
 export async function getData(path) {
     try {
-        const snapshot = await db.ref(path).once('value');
+        const snapshot = await database.ref(path).once('value');
         if (snapshot.exists()) {
             console.log('Data:', Object.values(snapshot.val()));
             return Object.values(snapshot.val());
