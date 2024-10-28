@@ -21,7 +21,7 @@ function getCronFromFrequence(time, frequence, createdAt) {
 }
 
 // Function to schedule cron jobs based on the frequence
-function scheduleTasks() {
+async function scheduleTasks() {
     const tasks = await fetchTasks();
 
     tasks.forEach((task) => {
