@@ -21,7 +21,7 @@ function getCronFromFrequence(time, frequence, createdAt) {
 }
 
 // Function to schedule cron jobs based on the frequence
-async function scheduleTasks() {
+function scheduleTasks() {
     const tasks = await fetchTasks();
 
     tasks.forEach((task) => {
@@ -54,12 +54,4 @@ async function scheduleTasks() {
     });
 }
 
-export default async function handler(req, res) {
-    try {
-        await scheduleTasks();
-        res.status(200).json({ message: 'Tasks scheduled successfully' });
-    } catch (error) {
-        console.error('Error scheduling tasks:', error);
-        res.status(500).json({ error: 'Failed to schedule tasks' });
-    }
-}
+scheduleTasks();
