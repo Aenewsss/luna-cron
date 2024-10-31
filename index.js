@@ -1,7 +1,7 @@
 import cron from 'node-cron';
 import { sendEmail } from './mailer.js'; // Email function
 import { sendWpp } from './whatsapp.js';
-import { getData, database } from './firebase.js'; // Firebase admin setup
+import { getData } from './firebase.js'; // Firebase admin setup
 import admin from 'firebase-admin'; // Correct import for Firebase Admin SDK
 
 let scheduledJobs = [];
@@ -18,17 +18,23 @@ function clearScheduledJobs() {
 }
 
 // Function to get cron expression based on the frequency
-function getCronFromFrequence(time, frequence, createdAt) {
-    const hour = new Date(createdAt).getHours();
-    const minute = new Date(createdAt).getMinutes();
+function getCronFromFrequence(time, frequence, date) {
+
+    const taskDate = new Date(date)
 
     switch (frequence) {
         case 'day':
-            return `${minute} ${hour} */${time} * *`; // Every X days at the given hour/minute
+            var day = taskDate.getDate();
+            var updatedDate = new Date(taskDate.setDate(day - time))
+            return `${updatedDate.getMinutes()} ${updatedDate.getHours()} ${updatedDate.getDate()} ${updatedDate.getMonth() + 1} *`;
         case 'hour':
-            return `${minute} */${time} * * *`; // Every X hours at the given minute
+            var hour = taskDate.getHours();
+            var updatedDate = new Date(taskDate.setHours(hour - time))
+            return `${updatedDate.getMinutes()} ${updatedDate.getHours()} ${updatedDate.getDate()} ${updatedDate.getMonth() + 1} *`;
         case 'minute':
-            return `*/${time} * * * *`; // Every X minutes
+            var minute = taskDate.getMinutes();
+            var updatedDate = new Date(taskDate.setMinutes(minute - time))
+            return `${updatedDate.getMinutes()} ${updatedDate.getHours()} ${updatedDate.getDate()} ${updatedDate.getMonth() + 1} *`;
         default:
             throw new Error('Invalid frequency');
     }
@@ -41,25 +47,27 @@ async function scheduleTasks() {
     const tasks = await fetchTasks();
 
     tasks.forEach((task) => {
-        const { title, description, frequence, email, phone, time, createdAt } = Object.values(task)[0];
+        const { title, description, email, notifications, phone, date } = task;
 
-        console.log(`Scheduling task "${title}" with frequence "${frequence}"`);
+        console.log(`Scheduling task "${title}" to date "${date}"`);
 
-        const cronFrequence = getCronFromFrequence(time, frequence, createdAt);
+        notifications.forEach(notification => {
+            const cronFrequence = getCronFromFrequence(notification.time, notification.frequence, date);
 
-        const job = cron.schedule(cronFrequence, async () => {
-            console.log(`Executing task "${title}"`);
+            const job = cron.schedule(cronFrequence, async () => {
+                console.log(`Executing task "${title}"`);
 
-            // Send email to the user
-            await sendEmail(email, `Reminder: ${title}`, `You have a task: ${description}`);
-            console.log('Email sent');
+                // Send email to the user
+                await sendEmail(email, `Reminder: ${title}`, `You have a task: ${description}`);
+                console.log('Email sent');
 
-            // Send WhatsApp message
-            await sendWpp(phone, `Lembrete: ${title}`, description);
-            console.log('WhatsApp message sent');
-        });
+                // Send WhatsApp message
+                await sendWpp(phone, `Lembrete: ${title}`, description);
+                console.log('WhatsApp message sent');
+            });
 
-        scheduledJobs.push(job); // Store the scheduled job
+            scheduledJobs.push(job); // Store the scheduled job
+        })
     });
 }
 
