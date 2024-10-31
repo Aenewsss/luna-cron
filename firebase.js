@@ -12,8 +12,7 @@ export async function getData(path) {
     try {
         const snapshot = await database.ref(path).once('value');
         if (snapshot.exists()) {
-            console.log('Data:', Object.values(snapshot.val()));
-            return Object.values(snapshot.val());
+            return Object.values(Object.values(snapshot.val())[0]).filter(el => el.status == 'TO_DO');
         } else {
             console.log('No data found at path:', path);
             return null;
